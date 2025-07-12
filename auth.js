@@ -1,36 +1,34 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const db = require("../db"); // your DB connection
-const verifyGoogleToken = require("Backend\verify_google_tokens.js");
+const express = require('express');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
+const { OAuth2Client } = require('google-auth-library');
+const pool = require('./config');
 
-router.post("/google", async (req, res) => {
+const client = new OAuth2Client("144575491595-ff9egetl3svgbe6f83rtkggfek27pn3g.apps.googleusercontent.com");
+
+router.post('/google', async (req, res) => {
   const { idToken } = req.body;
 
   try {
-    const userData = await verifyGoogleToken(idToken);
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: "144575491595-ff9egetl3svgbe6f83rtkggfek27pn3g.apps.googleusercontent.com"
+    });
 
-    let result = await db.query(
-      "SELECT * FROM users WHERE google_id = $1",
-      [userData.googleId]
-    );
+    const payload = ticket.getPayload();
+    const { email, name } = payload;
 
-    let user = result.rows[0];
+    let user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
-    if (!user) {
-      const insert = await db.query(
-        "INSERT INTO users (name, email, profile_pic, google_id) VALUES ($1, $2, $3, $4) RETURNING *",
-        [userData.name, userData.email, userData.picture, userData.googleId]
-      );
-      user = insert.rows[0];
+    if (!user.rows.length) {
+      await pool.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email]);
+      user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-
-    res.json({ token, user });
+    const token = jwt.sign({ id: user.rows[0].id, email }, 'your-secret-key');
+    res.json({ token, user: user.rows[0] });
   } catch (err) {
-    console.error(err);
-    res.status(400).json({ error: "Invalid Google token" });
+    res.status(401).json({ error: 'Google verification failed' });
   }
 });
 

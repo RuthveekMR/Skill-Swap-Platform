@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send Swap Request</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h2>Send Skill Swap Request</h2>
+    <textarea id="message" placeholder="Why do you want to swap skills?" required></textarea>
+    <button onclick="sendRequest()">Send</button>
+    <p id="status"></p>
+  </div>
+  <script>
+    const toUserId = new URLSearchParams(window.location.search).get("id");
+    const token = localStorage.getItem("token");
+
+    async function sendRequest() {
+      const msg = document.getElementById("message").value;
+      const res = await fetch('/api/swap', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          to_user_id: toUserId,
+          message: msg
+        })
+      });
+      const data = await res.json();
+      document.getElementById("status").innerText = data.success ? "Request sent!" : data.error;
+    }
+  </script>
+</body>
+</html>

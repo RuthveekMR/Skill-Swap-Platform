@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h2>Welcome, <span id="userName">User</span></h2>
+    <p>Location: <span id="userLocation"></span></p>
+    <p>Skills Offered: <span id="skillsOffered"></span></p>
+    <p>Skills Wanted: <span id="skillsWanted"></span></p>
+    <a href="search.html">🔍 Search for skill swaps</a>
+  </div>
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    document.getElementById("userName").innerText = user?.name;
+    document.getElementById("userLocation").innerText = user?.location || "N/A";
+    document.getElementById("skillsOffered").innerText = user?.skills_offered?.join(', ') || "-";
+    document.getElementById("skillsWanted").innerText = user?.skills_wanted?.join(', ') || "-";
+  </script>
+</body>
+</html>

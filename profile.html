@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h2><span id="name"></span>'s Profile</h2>
+    <p>Email: <span id="email"></span></p>
+    <p>Location: <span id="location"></span></p>
+    <p>Skills Offered: <span id="skillsOffered"></span></p>
+    <p>Skills Wanted: <span id="skillsWanted"></span></p>
+    <a id="requestLink" href="#">Send Swap Request</a>
+  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("id");
+    fetch(`/api/user/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("name").innerText = data.name;
+        document.getElementById("email").innerText = data.email;
+        document.getElementById("location").innerText = data.location;
+        document.getElementById("skillsOffered").innerText = data.skills_offered.join(', ');
+        document.getElementById("skillsWanted").innerText = data.skills_wanted.join(', ');
+        document.getElementById("requestLink").href = `swap_request.html?id=${data.id}`;
+      });
+  </script>
+</body>
+</html>

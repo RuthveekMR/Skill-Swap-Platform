@@ -1,13 +1,22 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const authRoutes = require("./routes/auth");
-app.use("/api/auth", authRoutes);
+// Serve frontend
+app.use(express.static(path.join(__dirname, 'public')));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// API routes
+app.use('/api/user', require('./routes/userRoutes'));
+app.use('/api/swap', require('./routes/swapRoutes'));
+app.use('/api/auth', require('./auth'));
+
+// Catch-all (serves login.html for unknown frontend routes)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.listen(5000, () => console.log('✅ Server running on http://localhost:5000'));

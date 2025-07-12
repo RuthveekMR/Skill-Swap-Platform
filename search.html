@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Search Skills</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h2>Find Skills</h2>
+    <input type="text" id="skillSearch" placeholder="e.g. Photoshop">
+    <button onclick="searchSkills()">Search</button>
+    <ul id="resultsList"></ul>
+  </div>
+  <script>
+    async function searchSkills() {
+      const skill = document.getElementById("skillSearch").value;
+      const res = await fetch(`/api/user/search?skill=${encodeURIComponent(skill)}`);
+      const users = await res.json();
+      const list = document.getElementById("resultsList");
