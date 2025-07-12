@@ -1,0 +1,44 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f0f2f5;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Container for all forms and dashboards */
+.form-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Inputs and buttons */
+input, textarea, button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #2575fc;
+  color: white;
+  border: none;
+  cursor: pointer;
